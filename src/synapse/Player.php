@@ -143,24 +143,22 @@ class Player{
 		if($this->client instanceof Client){
 			$pk = new PlayerLogoutPacket();
 			$pk->reason = "Player has been transferred";
+			$pk->uuid = $this->getUUID();
 			$this->client->sendDataPacket($pk);
-
 			$this->client->removePlayer($this);
-
 			$this->removeAllPlayer();
-		}
+			}	
 		$this->client = $client;
-		$this->client->addPlayer($this);
+		
 		$pk = new PlayerLoginPacket();
-		$pk->uuid = $this->uuid;
+		$pk->uuid = $this->getUUID();
 		$pk->address = $this->ip;
 		$pk->port = $this->port;
 		$pk->isFirstTime = $this->isFirstTimeLogin;
 		$pk->cachedLoginPacket = $this->cachedLoginPacket;
 		$this->client->sendDataPacket($pk);
-
+		$this->client->addPlayer($this);
 		$this->isFirstTimeLogin = false;
-
 		$this->server->getLogger()->info("{$this->name} has been transferred to {$this->client->getIp()}:{$this->client->getPort()}");
 	}
 
