@@ -54,6 +54,7 @@ class Player{
 	private $rawUUID;
 	private $isFirstTimeLogin = true;
 	private $lastUpdate;
+	private $current_version = "0.15.x";
 
 	public function __construct(SourceInterface $interface, $clientId, $ip, int $port){
 		$this->interface = $interface;
@@ -97,6 +98,22 @@ class Player{
 				$this->rawUUID = $this->uuid->toBinary();
 				$this->randomClientId = $pk->clientId;
 				$this->protocol = $pk->protocol;
+				
+				if(!in_array($packet->protocol, ProtocolInfo::ACCEPTED_PROTOCOLS)){
+					if($packet->protocol < ProtocolInfo::CURRENT_PROTOCOL){
+						$message = "Your MCPE version is outdated! Please update to ".$this->current_version."!";
+						$pk = new PlayStatusPacket();
+						$pk->status = PlayStatusPacket::LOGIN_FAILED_CLIENT;
+						$this->directDataPacket($pk);
+					}else{
+						$message = "Server is outdated!";
+						$pk = new PlayStatusPacket();
+						$pk->status = PlayStatusPacket::LOGIN_FAILED_SERVER;
+						$this->directDataPacket($pk);
+					}
+					$this->close("", $message, false);
+					break;
+				}
 
 				$this->server->getLogger()->info($this->getServer()->getLanguage()->translateString("synapse.player.logIn", [
 					TextFormat::AQUA . $this->name . TextFormat::WHITE,
