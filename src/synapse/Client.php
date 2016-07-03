@@ -191,16 +191,16 @@ class Client{
 	}
 
 	public function addPlayer(Player $player){
-		$this->players[$player->getRawUUID()] = $player;
+		$this->players[$player->getUniqueId()->toBinary()] = $player;
 	}
 
 	public function removePlayer(Player $player){
-		unset($this->players[$player->getRawUUID()]);
+		unset($this->players[$player->getUniqueId()->toBinary()]);
 	}
 
 	public function closeAllPlayers(){
 		foreach($this->players as $player){
-			$player->close("Server Closed");
+			$player->close("Server closed!");
 		}
 	}
 
