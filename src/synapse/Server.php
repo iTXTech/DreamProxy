@@ -133,7 +133,7 @@ class Server{
 				"motd" => "Minecraft: PE Server",
 				"server-port" => 19132,
 				"synapse-port" => 10305,
-				"password" => substr(md5("admin"), 8, 16),
+				"password" => md5(mt_rand(0, PHP_INT_MAX)),
 				"lang" => "eng",
 				"async-workers" => "auto",
 				"enable-profiling" => false,
@@ -264,7 +264,7 @@ class Server{
 	}
 
 	public function comparePassword(string $pass) : bool{
-		$rawPass = trim(Utils::aes_decode($pass, ($truePass = $this->getConfig("password", "123456"))));
+		$rawPass = rtrim(Utils::aes_decode($pass, ($truePass = $this->getConfig("password", "123456"))));
 		if($rawPass == $truePass){
 			return true;
 		}
