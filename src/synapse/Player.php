@@ -105,7 +105,7 @@ class Player{
 				break;
 			case Info::LOGIN_PACKET:
 				$this->cachedLoginPacket = $pk->buffer;
-				$this->name = $pk->username;
+			//	$this->name = $pk->username //fix 0.15.2 join server
 				$this->uuid = UUID::fromString($pk->clientUUID);
 				$this->rawUUID = $this->uuid->toBinary();
 				$this->randomClientId = $pk->clientId;
